@@ -15,6 +15,8 @@ class Chef
       end
 
       def action_modify
+        post "/nodes/#{@new_resource.id}/controller/setupServices", "services" => "data,index,query"
+
         if @current_resource.database_path != @new_resource.database_path
           post "/nodes/#{@new_resource.id}/controller/settings", "path" => @new_resource.database_path
           @new_resource.updated_by_last_action true
