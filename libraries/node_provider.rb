@@ -15,7 +15,7 @@ class Chef
       end
 
       def action_modify
-        post "/nodes/#{@new_resource.id}/controller/setupServices", "services" => "data,index,query"
+        post "/node/controller/setupServices", "services" => "kv,n1ql,index"
 
         if @current_resource.database_path != @new_resource.database_path
           post "/nodes/#{@new_resource.id}/controller/settings", "path" => @new_resource.database_path
