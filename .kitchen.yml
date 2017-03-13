@@ -3,29 +3,13 @@ driver_plugin: vagrant
 driver_config:
   require_chef_omnibus: true
   customize:
-    memory: 1024
+    memory: 1546
 
 provisioner:
   name: chef_zero
 
 platforms:
-- name: debian-7.6
-  run_list:
-  - recipe[apt]
-
-- name: ubuntu-12.04
-  run_list:
-  - recipe[apt]
-
-- name: centos-6.5
-
-- name: windows-2012R2
-  transport:
-    name: winrm
-  driver_config:
-    box: win2012r2-datacenter-chef11.16.2
-    vm_hostname: couchbase
-    require_chef_omnibus: false
+- name: centos-7.2
 
 suites:
 - name: server-community
@@ -54,46 +38,9 @@ suites:
           saslpassword: "mustbedifferent"
           memory_quota_percent: 0.5
           replicas: 1
-
-- name: server-enterprise
-  run_list:
-  - recipe[minitest-handler]
-  - recipe[couchbase::server]
-  - recipe[couchbase::cluster]
-  - recipe[couchbase::buckets]
-  attributes:
-    couchbase:
       server:
-        edition: "enterprise"
-        version: "2.2.0"
-      cluster:
-        name: "dev"
-        username: "admin"
-        password: "test1234"
-        memory_quota_mb: 512
-      buckets:
-        one:
-          cluster: "dev"
-          type: "memcached"
-          saslpassword: "nevertellanyone"
-          memory_quota_mb: 256
-          replicas: 0
-        two:
-          cluster: "dev"
-          type: "couchbase"
-          saslpassword: "mustbedifferent"
-          memory_quota_percent: 0.5
-          replicas: 1
-
-- name: moxi
-  run_list:
-  - recipe[minitest-handler]
-  - recipe[couchbase::moxi]
-  attributes: {}
-  excludes: ["windows-2012R2"]
-
-- name: client
-  run_list:
-  - recipe[minitest-handler]
-  - recipe[couchbase::client]
-  attributes: {}
+        password: "whatever"
+        package_full_url: http://packages.couchbase.com/releases/4.0.0/couchbase-server-community-4.0.0-centos6.x86_64.rpm
+        package_file: couchbase-server-community-4.0.0-centos6.x86_64.rpm
+        version: 4.0.0
+        memory_quota_mb: 1024

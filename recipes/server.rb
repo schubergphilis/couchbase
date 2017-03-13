@@ -127,9 +127,27 @@ directory node['couchbase']['server']['index_path'] do
   recursive true
 end
 
+bash 'systemd_reload' do
+  code <<-EOH
+  /bin/systemctl daemon-reload
+  EOH
+  action :nothing
+end
+
+template '/usr/lib/systemd/system/couchbase-server.service' do
+  source 'couchbase-server.service.erb'
+  owner 'root'
+  group 'root'
+  mode '0644'
+  variables(
+    :couchbase_user => "root",
+  )
+  notifies :run, 'bash[systemd_reload]', :immediately
+end
+
 service node['couchbase']['server']['service_name'] do
   supports :restart => true, :status => true
-  action [:enable, :start]
+  action [:start, :enable]
   notifies :create, "ruby_block[block_until_operational]", :immediately
 end
 
